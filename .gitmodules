@@ -1,0 +1,12 @@
+[submodule "engine"]
+	path = engine
+	url = https://github.com/aspose-core-mcp/context-engine.git
+	branch = codex/total-cpp-serving
+[submodule "plugins/words-cpp"]
+	path = plugins/words-cpp
+	url = https://github.com/aspose-words-mcp/cpp-plugin.git
+	branch = main
+[submodule "plugins/tex-cpp"]
+	path = plugins/tex-cpp
+	url = https://github.com/aspose-tex-mcp/cpp-plugin.git
+	branch = main
