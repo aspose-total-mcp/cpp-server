@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 foreach ($argument in $args) {
+    if ($argument -match '^--(workspace|catalog|python)') { throw 'Use fixed deployment arguments.' }
     if ($argument -like '--source-kind*') { throw 'This command ingests Words documentation plus examples; omit --source-kind.' }
 }
 & "$root/.venv/Scripts/python.exe" "$PSScriptRoot/prepare_cpp_examples.py"

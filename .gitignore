@@ -5,3 +5,7 @@ __pycache__/
 *.pyc
 artifacts/
 reports/
+
+# Local editor and OS files
+.DS_Store
+.vscode/

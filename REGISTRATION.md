@@ -16,7 +16,7 @@ The shared engine URL is `https://github.com/aspose-core-mcp/context-engine.git`
 - Words, TeX and Total endpoint initialization identities passed with this deployment catalog.
 - Words plugin: 12 tests passed.
 - TeX plugin: 14 tests passed.
-- Complete Words example preparation: 5 tests passed.
+- Example preparation and ingestion-wrapper regressions: 7 tests passed (including shell and PowerShell routing/override checks).
 - C++ endpoint regressions: 142 tests passed.
 
 Checks used an existing Python environment against this checkout. A fresh environment installation, hosted GitHub Actions, Docker services and full ingestion were not run. A Starlette/httpx deprecation warning was non-failing.
@@ -25,4 +25,6 @@ Checks used an existing Python environment against this checkout. A fresh enviro
 
 The parent Git repository is initialized and its submodule references are staged; no commit or push was performed. Its origin remote is `https://github.com/aspose-total-mcp/cpp-server.git`. The Total .NET repository is only a deployment reference.
 
-Commit and push component edits first, then commit parent references and setup/documentation changes. Preserve engine and plugin licenses; select a root deployment license before public release.
+Commit and push component edits first, then commit parent references and setup/documentation changes. Preserve engine and plugin licenses; the root deployment now includes the MIT license with Aspose attribution.
+
+The deployment verification now validates both docs and API responses against the engine contract, verifies expected symbols and tool schemas, tests Total fan-out and explicit product selection, and rejects unsupported product/language scopes before retrieval.
