@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "../plugins/words-cpp/plugin.json",
+    "../plugins/tex-cpp/plugin.json"
+  ],
+  "compositions": [
+    "total-cpp.json"
+  ]
+}

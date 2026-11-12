@@ -1,0 +1,15 @@
+{
+  "url": "https://github.com/aspose-words/Aspose.Words-for-C.git",
+  "branch": "master",
+  "checkout": "engine/sources/words-cpp-examples",
+  "source_roots": [
+    "Examples/DocsExamples/source",
+    "Examples/ApiExamples/source"
+  ],
+  "sparse_paths": [
+    "Examples/DocsExamples",
+    "Examples/ApiExamples"
+  ],
+  "output_directory": "complete-cpp-examples",
+  "max_part_characters": 9000
+}

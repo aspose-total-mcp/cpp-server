@@ -1,0 +1,18 @@
+image: python:3.12-slim
+
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+  GIT_SUBMODULE_PATHS: engine plugins/words-cpp plugins/tex-cpp
+
+stages: [test]
+
+registration:
+  stage: test
+  script:
+    - python -m pip install ./engine pytest
+    - python scripts/verify_registration.py
+    - python -m unittest discover -s scripts/tests -q
+    - python -m unittest discover -s plugins/words-cpp/tests -q
+    - python -m unittest discover -s plugins/tex-cpp/tests -q
+    - cd engine
+    - python -m pytest tests/test_words_cpp_mcp.py tests/test_tex_cpp_mcp.py tests/test_total_cpp_mcp.py -q

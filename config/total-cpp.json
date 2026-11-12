@@ -1,0 +1,9 @@
+{
+  "composition_id": "aspose.total.cpp",
+  "language": "cpp",
+  "members": [
+    "aspose.words.cpp",
+    "aspose.tex.cpp"
+  ],
+  "owns_sources": false
+}

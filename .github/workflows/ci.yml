@@ -1,0 +1,33 @@
+name: Total C++ deployment checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Configuration checks
+        run: |
+          for script in scripts/*.sh; do sh -n "$script"; done
+          python -m json.tool config/product-platform-plugins.json > /dev/null
+          python -m json.tool config/total-cpp.json > /dev/null
+      - run: sh scripts/setup.sh
+      - run: .venv/bin/python -m unittest discover -s plugins/words-cpp/tests -v
+      - run: .venv/bin/python -m unittest discover -s plugins/tex-cpp/tests -v
+      - run: .venv/bin/python -m unittest discover -s scripts/tests -v
+      - name: Endpoint regressions
+        working-directory: engine
+        env:
+          PYTHONPATH: src
+        run: |
+          ../.venv/bin/python -m pip install pytest
+          ../.venv/bin/python -m pytest tests/test_words_cpp_mcp.py tests/test_tex_cpp_mcp.py tests/test_total_cpp_mcp.py -q
