@@ -17,7 +17,7 @@ git clone --branch master https://github.com/aspose-tex-mcp/reference.git engine
 
 Stop if any clone fails. On Linux use `export GIT_LFS_SKIP_SMUDGE=1` and `mkdir -p engine/sources` before the same Git commands. Manifests select only `en/cpp` docs and `english/cpp` API references. Existing checkouts must match the manifest repositories; preserve their local work before migration.
 
-## Prepare Gists and ingest
+## Prepare Gists
 
 PowerShell, from the server root:
 
@@ -29,22 +29,42 @@ $env:PYTHONPATH = Join-Path $PWD 'plugins/tex-cpp/src'
 & .\plugins\tex-cpp\.venv\Scripts\python.exe -m adcs_tex_cpp.gist_examples --source-root engine/sources/tex-documentation/en/cpp --cache plugins/tex-cpp/sources/gist-examples.json --resolve-history
 if ($LASTEXITCODE -ne 0) { throw 'TeX Gist preparation failed.' }
 
-# Validate both products separately:
-.\scripts\ingest.ps1 --source-kind both --timeout 300
-.\scripts\ingest-tex.ps1 --source-kind both --timeout 300
-# Continue only after successful validation:
-.\scripts\ingest.ps1 --source-kind docs --publish --timeout 300
-.\scripts\ingest.ps1 --source-kind apiref --publish --timeout 300
-.\scripts\ingest-tex.ps1 --source-kind docs --publish --timeout 300
-.\scripts\ingest-tex.ps1 --source-kind apiref --publish --timeout 300
 ```
 
-On Linux prepare each Gist cache with `PYTHONPATH=plugins/<plugin>/src plugins/<plugin>/.venv/bin/python -m <module>.gist_examples` and the same source/cache arguments, then use `sh scripts/ingest.sh` for Words and `sh scripts/ingest-tex.sh` for TeX with the same options. Stop on failures and do not run overlapping ingestion. There is no separate Total ingestion.
+## Validate, then publish
 
+After preparing sources and Gist caches, validate each product. Without `--publish`, these commands validate only.
 
-## Product selector
+PowerShell:
 
-The original commands remain supported: `ingest.ps1` / `ingest.sh` target Words, and `ingest-tex.ps1` / `ingest-tex.sh` target TeX. You may also use the .NET-style selector: `sh scripts/ingest.sh words ...` or `sh scripts/ingest.sh tex ...` (PowerShell supports the same selectors). Workspace, catalog and interpreter overrides are rejected.
+```powershell
+# Validate both products separately:
+.\scripts\ingest.ps1 words --source-kind both --timeout 300
+.\scripts\ingest.ps1 tex --source-kind both --timeout 300
+# Continue only after successful validation:
+.\scripts\ingest.ps1 words --source-kind docs --publish --timeout 300
+.\scripts\ingest.ps1 words --source-kind apiref --publish --timeout 300
+.\scripts\ingest.ps1 tex --source-kind docs --publish --timeout 300
+.\scripts\ingest.ps1 tex --source-kind apiref --publish --timeout 300
+```
+
+Linux: prepare each Gist cache with `PYTHONPATH=plugins/<plugin>/src plugins/<plugin>/.venv/bin/python -m <module>.gist_examples` and the same source/cache arguments above, then run:
+
+```sh
+# Validate each product:
+sh scripts/ingest.sh words --source-kind both --timeout 300
+sh scripts/ingest.sh tex --source-kind both --timeout 300
+
+# Continue only after successful validation:
+sh scripts/ingest.sh words --source-kind docs --publish --timeout 300
+sh scripts/ingest.sh words --source-kind apiref --publish --timeout 300
+sh scripts/ingest.sh tex --source-kind docs --publish --timeout 300
+sh scripts/ingest.sh tex --source-kind apiref --publish --timeout 300
+```
+
+Stop on failures and do not run overlapping ingestion. There is no separate Total ingestion. `sh` runs the wrapper without requiring executable permission.
+
+The `words` and `tex` selectors choose the corresponding C++ plugin. Use `sh scripts/ingest.sh tex` on Linux or `.\scripts\ingest.ps1 tex` in PowerShell for TeX; replace `tex` with `words` for Words. Omitting the selector still targets Words. Workspace, catalog and interpreter overrides are rejected.
 
 <a id="complete-words-examples"></a>
 

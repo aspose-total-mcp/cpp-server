@@ -35,7 +35,18 @@ sh scripts/run-engine.sh -m uvicorn adcs.api.main:app --host 127.0.0.1 --port 18
 sh scripts/run-engine.sh -m celery -A adcs.worker.celery_app:celery_app worker --loglevel=info
 ```
 
-Follow [source preparation and ingestion](docs/ingestion.md), then connect a client to your deployment:
+## Validate, then publish
+
+After [downloading sources and preparing Gist caches](docs/ingestion.md), validate each C++ product:
+
+```sh
+sh scripts/ingest.sh words --source-kind both
+sh scripts/ingest.sh tex --source-kind both
+```
+
+These commands validate only. After successful validation, follow the [publication commands](docs/ingestion.md#validate-then-publish) to ingest into the configured stores.
+
+Connect a client to your deployment:
 
 ```text
 https://YOUR_MCP_HOST/total/cpp/mcp/v1/streamable-http
@@ -49,7 +60,7 @@ Words and TeX endpoints remain available on the same process. Other inherited co
 
 Each plugin retains its published manifest. Both use the engine workspace with four distinct source folders; registration rejects overlapping source paths. Each plugin owns its Gist cache. Both publish to shared stores with separate product/language metadata. Never ingest `aspose.total.cpp` as a third product.
 
-Windows users can use `scripts/setup.ps1`, `scripts/run-engine.ps1` and the ingestion PowerShell wrappers. Existing Words/TeX ingestion commands remain supported; see [ingestion](docs/ingestion.md). The optional [complete Words C++ example workflow](docs/ingestion.md#complete-words-examples) is retained.
+Windows users can use `scripts/setup.ps1`, `scripts/run-engine.ps1` and the ingestion PowerShell wrappers. Use the `words` or `tex` selector with either ingestion wrapper; see [ingestion](docs/ingestion.md). The optional [complete Words C++ example workflow](docs/ingestion.md#complete-words-examples) is retained.
 
 ## Validation and maintenance
 

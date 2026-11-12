@@ -7,13 +7,15 @@ class IngestionWrappers(unittest.TestCase):
         if not shell:self.skipTest('Required shell unavailable')
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);scripts=root/'scripts';scripts.mkdir()
-            for name in ('ingest','ingest-tex'):
+            names = ('ingest',)
+            for name in names:
                 shutil.copyfile(ROOT/'scripts'/f'{name}.{extension}',scripts/f'{name}.{extension}')
             (scripts/f'run-engine.{extension}').write_text(stub,encoding='utf-8')
             def run(name,args):
                 command=([shell,'-NoProfile','-File'] if extension=='ps1' else [shell])+[str(scripts/f'{name}.{extension}'),*args]
                 return subprocess.run(command,capture_output=True,text=True,timeout=20)
-            for name,args,product in [('ingest',[],'words'),('ingest',['words'],'words'),('ingest',['tex'],'tex'),('ingest-tex',[],'tex')]:
+            cases = [('ingest',[],'words'),('ingest',['words'],'words'),('ingest',['tex'],'tex')]
+            for name,args,product in cases:
                 with self.subTest(name=name,args=args):
                     result=run(name,args+['--source-kind','docs'])
                     self.assertEqual(result.returncode,0,result.stderr)
@@ -22,7 +24,7 @@ class IngestionWrappers(unittest.TestCase):
                     expected_root = subprocess.check_output([shell, '-c', 'pwd'], cwd=root, text=True).strip() if extension == 'sh' else str(root).replace('\\', '/')
                     self.assertEqual(values[values.index('--workspace') + 1].replace('\\', '/'), expected_root + '/engine')
                     self.assertIn('--source-kind',values)
-            for name in ('ingest','ingest-tex'):
+            for name in names:
                 for args in (['--workspace','elsewhere'],['--catalog=other.json'],['--python','other-python']):
                     with self.subTest(name=name,args=args):
                         result=run(name,args)
